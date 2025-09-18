@@ -1,0 +1,97 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: "Arial", sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #ff6b9d 0%,
+    #c44569 25%,
+    #4ecdc4 50%,
+    #ffe66d 75%,
+    #ff6b9d 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+  color: #fff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+#root::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(255, 107, 157, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(78, 205, 196, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(255, 230, 109, 0.2) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.App {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 100vw;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+/* 모바일 우선 반응형 디자인 */
+@media (min-width: 480px) {
+  .App {
+    max-width: 480px;
+  }
+}
+
+@media (min-width: 768px) {
+  .App {
+    max-width: 600px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .App {
+    max-width: 700px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .App {
+    max-width: 800px;
+  }
+}

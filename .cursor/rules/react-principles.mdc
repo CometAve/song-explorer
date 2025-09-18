@@ -1,0 +1,349 @@
+---
+description: React v19.1.1 Best Practices and Coding Rules
+globs: '**/*.tsx, **/*.jsx'
+alwaysApply: true
+---
+
+# React v19.1.1 Best Practices and Coding Rules
+
+## Core Principles
+
+### 1. Strict Adherence to Rules of Hooks
+
+- **NEVER** call hooks conditionally, in loops, or nested functions
+- **ALWAYS** call hooks at the top level of function components or custom hooks
+- **NEVER** call hooks from regular JavaScript functions
+- **ALWAYS** call hooks in the same order on every render
+
+### 2. Component Purity and Predictability
+
+- **ALWAYS** write components as pure functions
+- **NEVER** perform side effects during rendering
+- **ALWAYS** return the same result for the same props
+- **HANDLE** side effects only within useEffect or event handlers
+
+### 3. Functional Components Only
+
+- **ALWAYS** use functional components instead of class components
+- **NEVER** use React.FC type annotation
+- **DEFINE** components through direct function declarations
+
+### 4. Custom Hooks for Business Logic
+
+- **SEPARATE** all business logic into custom hooks
+- **FOCUS** components solely on UI rendering
+- **ENCAPSULATE** state management logic through custom hooks
+- **NAME** custom hooks with `use` prefix
+
+### 5. Error Handling and Error Boundaries
+
+- **IMPLEMENT** Error Boundaries for component-level error handling
+- **PROVIDE** user-friendly error messages
+- **PROVIDE** error recovery options
+- **USE** `throwOnError: true` with Error Boundaries for async operations
+
+### 6. Accessibility (WCAG 2.1 AA Compliance)
+
+- **USE** semantic HTML elements
+- **PROVIDE** appropriate ARIA attributes
+- **ENSURE** keyboard navigation support
+- **MAINTAIN** proper focus management
+- **ACHIEVE** minimum 4.5:1 color contrast ratio
+
+### 7. Component Composition and Reusability
+
+- **DESIGN** completely reusable components
+- **SUPPORT** flexible customization through props
+- **UTILIZE** composition patterns
+- **ADHERE** to single responsibility principle
+
+### 8. File and Component Organization
+
+- **USE** PascalCase for component file names
+- **USE** camelCase for utility functions
+- **SEPARATE** components, hooks, types, and utilities
+- **ORGANIZE** by feature/domain when possible
+
+## React 19 New Features
+
+### useOptimistic Hook
+
+- **ENABLE** optimistic UI updates for better user experience
+- **AUTOMATICALLY** revert to original state if update fails
+- **IMPROVE** perceived performance during async operations
+- **PROVIDE** immediate feedback to users during data mutations
+- **HANDLE** complex state updates with custom reducer functions
+
+```tsx
+import { useOptimistic, useRef, startTransition } from 'react';
+
+function MessageThread({ messages, sendMessageAction }) {
+  const formRef = useRef();
+
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic(
+    messages,
+    (state, newMessage) => [
+      {
+        text: newMessage,
+        sending: true,
+        id: Date.now(),
+      },
+      ...state,
+    ],
+  );
+
+  async function formAction(formData) {
+    addOptimisticMessage(formData.get('message'));
+    formRef.current.reset();
+
+    startTransition(async () => {
+      await sendMessageAction(formData);
+    });
+  }
+
+  return (
+    <>
+      <form action={formAction} ref={formRef}>
+        <input type="text" name="message" placeholder="Hello!" />
+        <button type="submit">Send</button>
+      </form>
+      {optimisticMessages.map((message) => (
+        <div key={message.id}>
+          {message.text}
+          {message.sending && <small> (Sending...)</small>}
+        </div>
+      ))}
+    </>
+  );
+}
+```
+
+### useActionState Hook
+
+- **SIMPLIFY** form handling with `useActionState` hook
+- **MANAGE** form state and submission status automatically
+- **HANDLE** async operations with built-in pending state
+- **PROVIDE** error handling and state management in one hook
+- **ENABLE** server actions integration with form elements
+
+```tsx
+import { useActionState } from 'react';
+import { redirect } from 'react-router-dom';
+
+function UserProfileForm({ user }) {
+  const [error, submitAction, isPending] = useActionState(
+    async (previousState, formData) => {
+      try {
+        const name = formData.get('name');
+        const email = formData.get('email');
+
+        // Validate input
+        if (!name || !email) {
+          return 'Name and email are required';
+        }
+
+        // API call
+        const result = await updateUser({ name, email });
+
+        if (result.success) {
+          redirect('/profile'); // Redirect on success
+          return null;
+        } else {
+          return result.error || 'Update failed';
+        }
+      } catch (error) {
+        return error.message || 'An unexpected error occurred';
+      }
+    },
+    null, // Initial state
+  );
+
+  return (
+    <form action={submitAction}>
+      <div>
+        <label htmlFor="name">Name:</label>
+        <input id="name" name="name" type="text" defaultValue={user.name} required />
+      </div>
+      <div>
+        <label htmlFor="email">Email:</label>
+        <input id="email" name="email" type="email" defaultValue={user.email} required />
+      </div>
+      <button type="submit" disabled={isPending}>
+        {isPending ? 'Updating...' : 'Update Profile'}
+      </button>
+      {error && <p className="error">{error}</p>}
+    </form>
+  );
+}
+```
+
+### useFormStatus Hook
+
+- **ACCESS** form submission status from child components
+- **REQUIRE** component to be descendant of `<form>` element
+- **PROVIDE** pending state and form data access
+- **ENABLE** UI updates based on form submission state
+- **AVOID** prop drilling for form state management
+
+```tsx
+import { useFormStatus } from 'react-dom';
+
+function SubmitButton({ children, ...props }) {
+  const { pending, data, action, method } = useFormStatus();
+
+  return (
+    <button type="submit" disabled={pending} {...props}>
+      {pending ? 'Submitting...' : children}
+    </button>
+  );
+}
+
+function FormField({ name, label, type = 'text' }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <div>
+      <label htmlFor={name}>{label}</label>
+      <input id={name} name={name} type={type} disabled={pending} required />
+    </div>
+  );
+}
+
+function ContactForm() {
+  return (
+    <form action={submitContactForm}>
+      <FormField name="name" label="Name" />
+      <FormField name="email" label="Email" type="email" />
+      <FormField name="message" label="Message" />
+      <SubmitButton>Send Message</SubmitButton>
+    </form>
+  );
+}
+```
+
+### use Hook Pattern
+
+- **UTILIZE** the new `use` hook for conditional Context access
+- **REMEMBER** this is the only hook that can be called conditionally
+- **HANDLE** Promises and Context values with the same hook
+- **PREFER** useEffect for Promise handling in CSR applications
+- **ENABLE** more flexible data fetching patterns
+
+```tsx
+import { use, Suspense } from 'react';
+import { UserContext } from './contexts';
+
+function UserProfile({ userId }) {
+  // Conditional Context access - only possible with use hook
+  const user = use(UserContext);
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+
+function DataComponent({ dataPromise }) {
+  // Promise handling with use hook
+  const data = use(dataPromise);
+
+  return <div>{data.title}</div>;
+}
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DataComponent dataPromise={fetchData()} />
+    </Suspense>
+  );
+}
+```
+
+## Performance Optimization
+
+### React Compiler and Memoization
+
+- **LEVERAGE** React Compiler for automatic memoization when available
+- **USE** `useCallback` for functions passed to child components (when React Compiler is not available)
+- **USE** `useMemo` for expensive computations (when React Compiler is not available)
+- **USE** `React.memo` for heavy components
+- **AVOID** excessive manual memoization when React Compiler handles it automatically
+
+```tsx
+// ✅ With React Compiler (automatic optimization)
+function ProductPage({ productId, referrer }) {
+  const product = useData('/product/' + productId);
+
+  // React Compiler automatically memoizes this function
+  const handleSubmit = (orderDetails) => {
+    post('/product/' + productId + '/buy', {
+      referrer,
+      orderDetails,
+    });
+  };
+
+  return <ShippingForm onSubmit={handleSubmit} />;
+}
+
+// ✅ Without React Compiler (manual optimization)
+function ProductPage({ productId, referrer }) {
+  const product = useData('/product/' + productId);
+
+  const handleSubmit = useCallback(
+    (orderDetails) => {
+      post('/product/' + productId + '/buy', {
+        referrer,
+        orderDetails,
+      });
+    },
+    [productId, referrer],
+  );
+
+  return <ShippingForm onSubmit={handleSubmit} />;
+}
+```
+
+## Prohibited Patterns
+
+### Absolutely Prohibited
+
+1. **NEVER** use `any` type - destroys type safety
+2. **NEVER** use `React.FC` - includes unnecessary children prop
+3. **NEVER** use Default exports - use Named exports for tree shaking
+4. **NEVER** violate Rules of Hooks
+5. **NEVER** use inline styles - use Tailwind CSS utilities
+6. **NEVER** use `console.log` in production code
+7. **NEVER** hardcode values - separate into constants files
+8. **NEVER** miss try-catch for async functions
+9. **NEVER** create subscriptions without useEffect cleanup
+10. **NEVER** assign multiple responsibilities to components
+
+## Testing Guidelines
+
+- **WRITE** tests from user perspective
+- **TEST** actual usage scenarios
+- **SIMULATE** error situations
+- **ENSURE** components are testable in isolation
+
+## Summary
+
+This cursorrules file enforces React v19 best practices for CSR (Client-Side Rendering) applications focusing on:
+
+- Strict adherence to Rules of Hooks
+- Component purity and predictability
+- Proper use of React 19 new features:
+  - `use` hook for conditional Context access
+  - `useActionState` for form state management
+  - `useFormStatus` from react-dom for form submission status
+  - `useOptimistic` for optimistic UI updates
+- Performance optimization with React Compiler awareness:
+  - Automatic memoization when React Compiler is available
+  - Manual `useCallback`/`useMemo` when React Compiler is not available
+- Accessibility compliance (WCAG 2.1 AA)
+- Clean component architecture with custom hooks
+- Comprehensive error handling with Error Boundaries
+- Traditional form handling patterns for CSR applications
+
+Follow these rules to build maintainable, performant, and accessible React applications using the latest React v19 features in a CSR environment.

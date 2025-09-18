@@ -1,0 +1,200 @@
+---
+description: Jotai Best Practices and Coding Rules
+alwaysApply: false
+---
+
+# Jotai Best Practices and Coding Rules
+
+## Core Principles
+
+### 1. Atomic State Management
+
+- **SPLIT** state into small, focused atom units
+- **SUBSCRIBE** only from necessary components to minimize re-renders
+- **AVOID** large monolithic state objects
+- **DEFINE** type-safe state with proper TypeScript interfaces
+
+### 2. Derived State with Computed Atoms
+
+- **USE** derived atoms for computed values and state transformations
+- **CLEARLY** define inter-state dependencies using `get` function
+- **OPTIMIZE** performance through automatic memoization
+- **HANDLE** asynchronous state with async atoms when needed
+
+### 3. Write-Only Atoms for Actions
+
+- **CREATE** write-only atoms for actions by passing `null` as read function
+- **SEPARATE** business logic from state atoms
+- **ENCAPSULATE** state update logic in action atoms
+- **INCLUDE** comprehensive error handling in actions
+
+### 4. Asynchronous State Handling
+
+- **IMPLEMENT** async atoms for data fetching and side effects
+- **HANDLE** loading and error states properly
+- **USE** React Suspense for async atoms when appropriate
+- **MANAGE** async state updates with proper error recovery
+
+### 5. Provider-less Mode and Context
+
+- **UTILIZE** Provider-less mode for single store scenarios
+- **REDUCE** boilerplate with default providers
+- **USE** Provider only when multiple stores are needed
+- **MANAGE** context boundaries properly for complex applications
+
+### 6. Atom Composition and Modularity
+
+- **COMPOSE** complex state from simple, focused atoms
+- **CREATE** reusable atom patterns for common use cases
+- **MAINTAIN** clear separation of concerns between atoms
+- **ENABLE** easy testing and debugging through modular design
+
+### 7. Type Safety and TypeScript Integration
+
+- **DEFINE** proper types for all atoms and their operations
+- **USE** type inference where possible for cleaner code
+- **ENSURE** type safety in atom read and write functions
+- **PROVIDE** type-safe interfaces for complex state structures
+
+### 8. Performance Optimization
+
+- **USE** `useAtomValue` and `useSetAtom` for optimized subscriptions
+- **IMPLEMENT** proper memoization for expensive computations
+- **AVOID** unnecessary re-renders through selective subscriptions
+- **OPTIMIZE** atom subscriptions by breaking down large components
+
+### 9. Error Handling and Validation
+
+- **IMPLEMENT** comprehensive error handling in atoms
+- **VALIDATE** data in atoms with proper type guards
+- **PROVIDE** error recovery mechanisms for failed operations
+- **HANDLE** async errors gracefully with proper state updates
+
+### 10. Testing Strategies
+
+- **TEST** atoms in isolation with proper mocking
+- **MOCK** external dependencies and side effects
+- **VERIFY** atom state changes through comprehensive test coverage
+- **ENSURE** proper cleanup in test environments
+
+### 11. Integration Patterns
+
+- **INTEGRATE** with React Query for server state management
+- **COMBINE** with form libraries for complex form handling
+- **USE** with routing libraries for navigation state
+- **ENSURE** proper integration patterns with other state management solutions
+- **LEVERAGE** React 19's new hooks with Jotai atoms
+- **UTILIZE** React 19's form actions with Jotai state
+
+### 12. React 19 Integration Patterns
+
+- **COMBINE** Jotai atoms with React 19's `useOptimistic` hook
+- **INTEGRATE** Jotai state with `useActionState` for form handling
+- **UTILIZE** Jotai atoms with React 19's `useFormStatus` hook
+- **ENABLE** seamless state management with React 19's new features
+
+```tsx
+import { atom, useAtom } from 'jotai';
+import { useOptimistic, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
+
+// Jotai atoms for state management
+const messagesAtom = atom<Message[]>([]);
+const userAtom = atom<User | null>(null);
+
+// React 19 + Jotai integration
+function MessageThread() {
+  const [messages, setMessages] = useAtom(messagesAtom);
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic(
+    messages,
+    (state, newMessage) => [{ ...newMessage, id: Date.now(), sending: true }, ...state],
+  );
+
+  const [error, submitAction, isPending] = useActionState(async (previousState, formData) => {
+    const message = formData.get('message') as string;
+    addOptimisticMessage({ text: message, id: Date.now() });
+
+    try {
+      const result = await sendMessage(message);
+      setMessages((prev) => [result, ...prev]);
+      return null;
+    } catch (error) {
+      return error.message;
+    }
+  }, null);
+
+  return (
+    <form action={submitAction}>
+      <input name="message" type="text" disabled={isPending} />
+      <SubmitButton />
+      {error && <p>{error}</p>}
+      {optimisticMessages.map((msg) => (
+        <div key={msg.id}>
+          {msg.text}
+          {msg.sending && <span> (Sending...)</span>}
+        </div>
+      ))}
+    </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button type="submit" disabled={pending}>
+      {pending ? 'Sending...' : 'Send'}
+    </button>
+  );
+}
+
+// Jotai with React 19's use hook
+function UserProfile() {
+  const user = use(userAtom);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+```
+
+## Prohibited Patterns
+
+### Absolutely Prohibited
+
+1. **NEVER** create large monolithic atoms with multiple responsibilities
+2. **NEVER** use atoms without proper TypeScript types
+3. **NEVER** ignore error handling in async atoms
+4. **NEVER** create circular dependencies between atoms
+5. **NEVER** use atoms for temporary local state (use React state instead)
+6. **NEVER** forget to handle loading states in async atoms
+7. **NEVER** create atoms with side effects in read functions
+8. **NEVER** use atoms without proper cleanup in components
+9. **NEVER** ignore performance implications of atom subscriptions
+10. **NEVER** create atoms that are too tightly coupled
+
+## Summary
+
+This cursorrules file enforces Jotai best practices focusing on:
+
+- Atomic state management with small, focused atoms
+- Derived state with computed atoms for complex state transformations
+- Write-only atoms for actions and business logic separation
+- Asynchronous state handling with proper error management
+- Provider-less mode for simplicity and reduced boilerplate
+- Atom composition and modularity for maintainable code
+- Type safety and TypeScript integration for robust applications
+- Performance optimization through selective subscriptions
+- Comprehensive error handling and validation
+- Testing strategies for reliable atom management
+- Integration patterns with other libraries and frameworks
+- **React 19 integration patterns** with new hooks and form actions
+- **Modern state management** combining Jotai with React 19 features
+
+Follow these rules to build scalable, maintainable, and performant state management with Jotai, especially when integrating with React 19's latest features.

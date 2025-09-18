@@ -1,0 +1,236 @@
+.SearchBar {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0.5rem;
+  padding: 0.5rem;
+}
+
+.SearchBar__container {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 0.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SearchBar {
+    margin: 2rem 1rem;
+    padding: 1rem;
+  }
+  
+  .SearchBar__container {
+    gap: 0.5rem;
+    border-radius: 30px;
+    padding: 0.5rem;
+    max-width: 500px;
+  }
+}
+
+@media (min-width: 768px) {
+  .SearchBar__container {
+    max-width: 600px;
+  }
+}
+
+.SearchBar__container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 157, 0.1),
+    rgba(78, 205, 196, 0.1)
+  );
+  border-radius: 30px;
+  pointer-events: none;
+}
+
+.SearchBar__input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 0.5rem 0.75rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 44px; /* 터치 친화적 크기 */
+}
+
+.SearchBar__icon {
+  font-size: 1rem;
+  margin-right: 0.25rem;
+  filter: drop-shadow(0 0 3px rgba(255, 107, 157, 0.5));
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SearchBar__input-container {
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+  }
+  
+  .SearchBar__icon {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+  }
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.SearchBar__input {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  padding: 0.25rem;
+  outline: none;
+  color: #333;
+  flex: 1;
+  font-weight: 500;
+  width: 100%;
+}
+
+.SearchBar__input::placeholder {
+  color: #999;
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SearchBar__input {
+    font-size: 16px;
+    padding: 0.5rem;
+  }
+  
+  .SearchBar__input::placeholder {
+    font-size: 16px;
+  }
+}
+
+.SearchBar__loading {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.SearchBar__spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 107, 157, 0.3);
+  border-top: 3px solid #ff6b9d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.SearchBar__button {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #ff6b9d, #c44569);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+  font-weight: 600;
+  min-height: 44px; /* 터치 친화적 크기 */
+  white-space: nowrap;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SearchBar__button {
+    gap: 0.5rem;
+    border-radius: 25px;
+    font-size: 16px;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+.SearchBar__button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.SearchBar__button:hover::before {
+  left: 100%;
+}
+
+.SearchBar__button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.6);
+  background: linear-gradient(135deg, #ff8bb3, #d65a7a);
+}
+
+.SearchBar__button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.SearchBar__button:disabled {
+  background: linear-gradient(135deg, #ccc, #999);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.SearchBar__button-icon {
+  font-size: 1.1rem;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
+}
+
+.SearchBar__button-text {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}

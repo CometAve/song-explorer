@@ -1,0 +1,171 @@
+.Navigation {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 157, 0.9) 0%,
+    rgba(196, 69, 105, 0.9) 50%,
+    rgba(78, 205, 196, 0.9) 100%
+  );
+  backdrop-filter: blur(20px);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.Navigation::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 70% 80%,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+}
+
+.Navigation__container {
+  position: relative;
+  z-index: 1;
+  padding: 1rem 0.5rem;
+}
+
+.Navigation__title {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 1rem;
+  animation: titleGlow 2s ease-in-out infinite alternate;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .Navigation__container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .Navigation__title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .Navigation__container {
+    padding: 2rem 1.5rem;
+  }
+  
+  .Navigation__title {
+    font-size: 1.8rem;
+  }
+}
+
+@keyframes titleGlow {
+  from {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3),
+      0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  to {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba(255, 255, 255, 0.6);
+  }
+}
+
+.Navigation__tabs {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.Navigation__link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  min-height: 44px; /* 터치 친화적 크기 */
+  min-width: 80px;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .Navigation__tabs {
+    gap: 1rem;
+  }
+  
+  .Navigation__link {
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    min-width: 100px;
+  }
+}
+
+@media (min-width: 768px) {
+  .Navigation__link {
+    padding: 1rem 2rem;
+    min-width: 120px;
+  }
+}
+
+.Navigation__link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.Navigation__link:hover::before {
+  left: 100%;
+}
+
+.Navigation__link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.Navigation__link.active {
+  background: linear-gradient(135deg, #ff6b9d, #c44569);
+  border-color: #fff;
+  box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+  transform: translateY(-2px);
+}
+
+.Navigation__icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
+}
+
+.Navigation__text {
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}

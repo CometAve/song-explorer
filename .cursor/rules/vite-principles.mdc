@@ -1,0 +1,214 @@
+---
+globs: vite.config.ts
+alwaysApply: false
+---
+
+# Vite v7.1.2 Best Practices and Configuration Rules
+
+## Core Principles
+
+### 1. Performance Optimization Settings
+
+- **CONFIGURE** dependency caching with `cacheDir`
+- **PRE-TRANSFORM** frequently used files with `warmup` option
+- **IMPROVE** build performance with `build.reportCompressedSize` setting
+- **OPTIMIZE** `optimizeDeps.holdUntilCrawlEnd` setting
+
+### 2. TypeScript Configuration Optimization
+
+- **SET** `moduleResolution` to `bundler`
+- **ENABLE** `allowImportingTsExtensions`
+- **IMPROVE** performance by allowing direct `.ts/.tsx` file imports
+
+### 3. Dependency Pre-bundling Optimization
+
+- **SPECIFY** explicit dependencies with `optimizeDeps.include`
+- **EXCLUDE** unnecessary dependencies with `optimizeDeps.exclude`
+- **ENSURE** ESM compatibility with `optimizeDeps.needsInterop`
+
+### 4. Build Performance Optimization
+
+- **SUPPORT** multi-page applications with `build.rollupOptions`
+- **OPTIMIZE** library builds with `build.lib` option
+- **IMPROVE** module resolution performance by reducing `resolve.extensions`
+
+### 5. Development Server Optimization
+
+- **PRE-TRANSFORM** client/SSR files with `server.warmup`
+- **ANALYZE** performance bottlenecks with `--profile` flag
+- **MONITOR** plugin performance with `--debug plugin-transform`
+
+### 6. Asset Handling and Optimization
+
+- **CONFIGURE** custom asset types with `assetsInclude`
+- **OPTIMIZE** asset loading with proper file extensions
+- **UTILIZE** asset URL imports with `?url` query parameter
+
+### 7. CSS and Styling Configuration
+
+- **CONFIGURE** CSS modules behavior
+- **OPTIMIZE** PostCSS processing
+- **ENABLE** CSS code splitting
+
+### 8. Environment-Specific Configuration
+
+- **SEPARATE** development and production configurations
+- **UTILIZE** conditional configuration based on command and mode
+- **IMPLEMENT** environment variable handling
+
+### 9. Plugin Configuration Best Practices
+
+- **CONFIGURE** plugins with proper options
+- **UTILIZE** plugin hooks effectively
+- **IMPLEMENT** custom plugins when needed
+
+### 10. Source Map Configuration
+
+- **CONFIGURE** source maps for development
+- **DISABLE** source maps in production for performance
+- **CUSTOMIZE** source map ignore list
+
+### 11. Proxy Configuration for Development
+
+- **CONFIGURE** API proxy for development
+- **HANDLE** CORS issues during development
+- **SETUP** proper proxy rewrites
+
+### 12. Bundle Analysis and Monitoring
+
+- **UTILIZE** bundle analysis tools
+- **MONITOR** bundle size regularly
+- **OPTIMIZE** based on analysis results
+
+## Vite 7.1 New Features
+
+### Environment API Support
+
+- **UTILIZE** enhanced support for multiple environments (SSR, Client, Worker)
+- **CONFIGURE** independent plugin pipelines per environment
+- **IMPROVE** Hot Module Replacement (HMR)
+
+### Enhanced Development Server Performance
+
+- **LEVERAGE** significantly improved cold start performance
+- **OPTIMIZE** dependency scanning
+- **UTILIZE** faster module resolution and transformation
+
+### Improved Plugin System
+
+- **UTILIZE** enhanced plugin communication API
+- **IMPLEMENT** better error handling and debugging
+- **CONFIGURE** improved plugin ordering and conditional application
+
+### Bundle Analysis Improvements
+
+- **UTILIZE** more accurate bundle size analysis
+- **ENHANCE** tree shaking optimization
+- **IMPROVE** dynamic import handling
+
+## Complex Configuration Examples
+
+### Server Warmup Configuration
+
+```typescript
+export default defineConfig({
+  server: {
+    warmup: {
+      clientFiles: ['./src/components/*.tsx', './src/utils/*.ts'],
+      ssrFiles: ['./src/server/modules/*.ts'],
+    },
+  },
+});
+```
+
+### Environment-Specific Configuration
+
+```typescript
+export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
+  const isDev = command === 'serve';
+  const isProd = command === 'build';
+
+  return {
+    define: {
+      __DEV__: isDev,
+      __PROD__: isProd,
+    },
+    server: isDev ? { port: 3000, open: true } : undefined,
+    build: isProd ? { minify: 'terser', sourcemap: false } : undefined,
+  };
+});
+```
+
+### Bundle Analysis Plugin
+
+```typescript
+import { visualizer } from 'rollup-plugin-visualizer';
+
+export default defineConfig({
+  plugins: [
+    process.env.ANALYZE &&
+      visualizer({
+        filename: 'dist/stats.html',
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+      }),
+  ].filter(Boolean),
+});
+```
+
+### CSS Modules Configuration
+
+```typescript
+export default defineConfig({
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+      generateScopedName: '[name]__[local]___[hash:base64:5]',
+    },
+    postcss: {
+      plugins: [
+        /* PostCSS plugins */
+      ],
+    },
+    devSourcemap: true,
+  },
+});
+```
+
+## Prohibited Patterns
+
+### Absolutely Prohibited
+
+1. **NEVER** disable source maps in development
+2. **NEVER** use `eval` in production builds
+3. **NEVER** ignore dependency optimization warnings
+4. **NEVER** use absolute paths without proper alias configuration
+5. **NEVER** disable HMR without proper justification
+6. **NEVER** use deprecated Vite options
+7. **NEVER** ignore build performance warnings
+8. **NEVER** use inefficient asset handling
+9. **NEVER** disable tree shaking without proper analysis
+10. **NEVER** use unoptimized plugin configurations
+
+## Performance Monitoring
+
+- **MONITOR** build times and bundle sizes
+- **ANALYZE** dependency graphs
+- **TRACK** performance metrics
+- **OPTIMIZE** based on real usage data
+
+## Summary
+
+This cursorrules file enforces Vite v7.1.2 best practices focusing on:
+
+- Performance optimization through proper configuration
+- Enhanced development server features
+- Improved plugin system utilization
+- Bundle analysis and optimization
+- Environment-specific configurations
+- Asset handling and optimization
+- Source map and proxy configuration
+- Performance monitoring and testing integration
+
+Follow these rules to build fast, optimized, and maintainable Vite applications with excellent developer experience.

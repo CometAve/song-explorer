@@ -1,0 +1,315 @@
+---
+description: TypeScript 5.8.3 Best Practices and Coding Rules
+globs: '**/*.ts, **/*.tsx'
+alwaysApply: true
+---
+
+# TypeScript 5.8.3 Best Practices and Coding Rules
+
+## Core Principles
+
+### 1. Mandatory Strict Mode Configuration
+
+- **ALWAYS** enable `strict: true` in TypeScript configuration
+- **ACTIVATE** all strict options automatically (noImplicitAny, strictNullChecks, etc.)
+- **PREVENT** runtime errors through strict type checking
+- **ENSURE** all modules are in strict mode
+- **CONFIGURE** additional strict options: noUnusedLocals, noUnusedParameters, noFallthroughCasesInSwitch, noUncheckedSideEffectImports, verbatimModuleSyntax
+
+### 2. Absolutely Prohibit `any` Type
+
+- **NEVER** use `any` type - it destroys type safety
+- **REPLACE** with `unknown` type for type safety
+- **DEFINE** all types explicitly
+- **USE** type guards for runtime type checking
+- **IMPLEMENT** proper type narrowing with type guards
+
+### 3. Mandatory Function Parameter Type Declaration
+
+- **DECLARE** types for all function parameters
+- **DEFINE** return types explicitly when possible
+- **DON'T** rely solely on type inference for public APIs
+- **USE** explicit return types for complex functions
+- **CREATE** interfaces for complex parameter objects
+
+### 4. Type Safety Through Interfaces
+
+- **DEFINE** all object types through interfaces
+- **SEPARATE** reusable types into separate files
+- **USE** interfaces for object shapes, types for unions/primitives
+- **EXTEND** interfaces for inheritance
+- **MAINTAIN** consistent naming conventions for interfaces
+
+### 5. Enhanced Type Narrowing (TypeScript 5.8)
+
+- **UTILIZE** improved type guards and conditional type inference
+- **LEVERAGE** enhanced type narrowing in Union types
+- **USE** improved inference for Template Literal Types
+- **IMPLEMENT** proper type guards for runtime type checking
+- **ENHANCE** control flow analysis for better type safety
+- **IMPROVE** type inference in complex conditional expressions
+
+```typescript
+// Enhanced type narrowing examples
+function processValue(value: string | number | boolean) {
+  if (typeof value === 'string') {
+    // TypeScript knows value is string here
+    return value.toUpperCase();
+  } else if (typeof value === 'number') {
+    // TypeScript knows value is number here
+    return value * 2;
+  } else {
+    // TypeScript knows value is boolean here
+    return value ? 'true' : 'false';
+  }
+}
+
+// Template literal type inference
+type EventName<T extends string> = `on${Capitalize<T>}`;
+type ClickEvent = EventName<'click'>; // 'onClick'
+type SubmitEvent = EventName<'submit'>; // 'onSubmit'
+
+// Improved conditional type inference
+type ApiResponse<T> = T extends string
+  ? { message: T }
+  : T extends number
+    ? { count: T }
+    : { data: T };
+
+type StringResponse = ApiResponse<string>; // { message: string }
+type NumberResponse = ApiResponse<number>; // { count: number }
+type ObjectResponse = ApiResponse<object>; // { data: object }
+```
+
+### 6. Auto-Accessors in Classes (TypeScript 5.8)
+
+- **USE** `accessor` keyword for automatic getter/setter generation
+- **REQUIRE** ES2015 or higher target for auto-accessors
+- **OPTIMIZE** metadata handling when used with decorators
+- **SIMPLIFY** class property definitions
+- **ENABLE** private field access with automatic getter/setter
+- **IMPROVE** encapsulation and data validation
+
+```typescript
+// Auto-accessors (requires ES2015+ target)
+class User {
+  accessor name: string = '';
+  accessor email: string = '';
+  accessor age: number = 0;
+
+  // Private accessor with validation
+  accessor #password: string = '';
+
+  // Computed accessor
+  get displayName(): string {
+    return `${this.name} (${this.email})`;
+  }
+
+  // Custom setter with validation
+  set email(value: string) {
+    if (!value.includes('@')) {
+      throw new Error('Invalid email format');
+    }
+    this.email = value;
+  }
+}
+
+// Usage
+const user = new User();
+user.name = 'John Doe'; // Uses auto-generated setter
+console.log(user.name); // Uses auto-generated getter
+```
+
+### 7. Prohibit Reserved Keywords
+
+- **NEVER** use JavaScript/TypeScript reserved words as identifiers
+- **AVOID** keywords prohibited in strict mode (eval, arguments, etc.)
+- **USE** descriptive, non-reserved names
+- **FOLLOW** strict mode restrictions in classes and modules
+
+### 8. Generic Type Safety
+
+- **USE** generic constraints for type safety
+- **AVOID** unconstrained type parameters
+- **PROVIDE** meaningful generic parameter names
+- **IMPLEMENT** proper generic constraints with `extends` keyword
+
+### 9. Error Handling with Type Safety
+
+- **DEFINE** explicit error types
+- **USE** type guards for exception scenarios
+- **IMPLEMENT** runtime validation
+- **HANDLE** errors with proper typing
+- **CREATE** custom error classes extending Error
+
+### 10. Module and Import Best Practices
+
+- **USE** named exports instead of default exports
+- **ENABLE** tree shaking optimization
+- **PROVIDE** clear identifiers when importing
+- **ORGANIZE** imports logically (React, external libraries, internal modules)
+- **MAINTAIN** consistent import/export patterns
+
+## Advanced Patterns
+
+### 11. Utility Types and Advanced Patterns
+
+- **USE** built-in utility types effectively (Partial, Required, Pick, Omit, etc.)
+- **CREATE** custom utility types for complex scenarios
+- **LEVERAGE** conditional types for advanced patterns
+- **IMPLEMENT** mapped types for dynamic type generation
+
+```typescript
+// Custom utility types
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+// Conditional types
+type ApiEndpoint<T> = T extends 'user' ? '/api/users' : T extends 'post' ? '/api/posts' : never;
+```
+
+### 12. Configuration and Environment Types
+
+- **DEFINE** environment variable types
+- **VALIDATE** configuration at runtime
+- **PROVIDE** type safety for environment-specific code
+- **IMPLEMENT** runtime validation functions
+
+```typescript
+// Environment configuration types
+interface EnvConfig {
+  readonly API_BASE_URL: string;
+  readonly AUTH_DOMAIN: string;
+  readonly NODE_ENV: 'development' | 'production' | 'test';
+}
+
+// Runtime validation
+function validateConfig(config: Partial<EnvConfig>): EnvConfig {
+  const requiredKeys: (keyof EnvConfig)[] = ['API_BASE_URL', 'AUTH_DOMAIN', 'NODE_ENV'];
+  for (const key of requiredKeys) {
+    if (!config[key]) {
+      throw new Error(`Missing required environment variable: ${key}`);
+    }
+  }
+  return config as EnvConfig;
+}
+```
+
+### 13. API Type Safety and Schema Validation
+
+- **USE** runtime schema validation with Zod, Yup, or Joi
+- **IMPLEMENT** type guards for API response data
+- **GENERATE** TypeScript types from schemas
+- **VALIDATE** external data at runtime
+
+```typescript
+import { z } from 'zod';
+
+// Schema definition with Zod
+const UserSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(2).max(100),
+  email: z.string().email(),
+});
+
+// Type inference from schema
+type User = z.infer<typeof UserSchema>;
+
+// API function with validation
+async function fetchUser(id: string): Promise<User> {
+  const response = await fetch(`/api/users/${id}`);
+  const data = await response.json();
+  return UserSchema.parse(data);
+}
+```
+
+## Prohibited Patterns
+
+### Absolutely Prohibited
+
+1. **NEVER** use `any` type - destroys type safety
+2. **NEVER** use `@ts-ignore` or `@ts-expect-error` without justification
+3. **NEVER** use `as` type assertions without proper validation
+4. **NEVER** disable strict mode options
+5. **NEVER** use reserved keywords as identifiers
+6. **NEVER** use `Function` type - use specific function signatures
+7. **NEVER** use `object` type - use specific object shapes
+8. **NEVER** use `{}` type - use `Record<string, unknown>` or specific types
+9. **NEVER** use `any[]` - use specific array types
+10. **NEVER** ignore TypeScript errors without proper handling
+11. **NEVER** use removed compiler options: `charset`, `keyofStringsOnly`
+12. **NEVER** use deprecated options: `importsNotUsedAsValues`, `preserveValueImports` (use `verbatimModuleSyntax`)
+
+## Performance and Compilation Optimization
+
+- **USE** `const` assertions for immutable data
+- **LEVERAGE** `satisfies` operator for type checking without widening
+- **OPTIMIZE** compilation with proper module resolution
+- **USE** path mapping for cleaner imports
+- **ENABLE** incremental compilation for faster builds
+- **UTILIZE** TypeScript 5.8's improved type inference performance
+- **IMPLEMENT** proper module resolution strategies
+
+```typescript
+// const assertions for immutable data
+const colors = ['red', 'green', 'blue'] as const;
+type Color = (typeof colors)[number]; // 'red' | 'green' | 'blue'
+
+// satisfies operator for type checking without widening
+const config = {
+  apiUrl: 'https://api.example.com',
+  timeout: 5000,
+  retries: 3,
+} satisfies {
+  apiUrl: string;
+  timeout: number;
+  retries: number;
+};
+
+// TypeScript 5.8 improved inference
+function createApiClient<T extends Record<string, unknown>>(config: T) {
+  // TypeScript infers the exact type of config
+  return {
+    get: (url: string) => fetch(url),
+    post: (url: string, data: unknown) =>
+      fetch(url, { method: 'POST', body: JSON.stringify(data) }),
+  };
+}
+
+// Path mapping in tsconfig.json
+// {
+//   "compilerOptions": {
+//     "baseUrl": ".",
+//     "paths": {
+//       "@/*": ["src/*"],
+//       "@/components/*": ["src/components/*"],
+//       "@/utils/*": ["src/utils/*"]
+//     }
+//   }
+// }
+```
+
+## Testing and Type Safety
+
+- **WRITE** type-safe test utilities
+- **USE** proper typing for test data
+- **IMPLEMENT** type guards in tests
+- **ENSURE** test coverage includes type scenarios
+- **CREATE** mock data with proper typing
+
+## Summary
+
+This cursorrules file enforces TypeScript 5.8.3 best practices focusing on:
+
+- Mandatory strict mode configuration with automatic strict options
+- Complete prohibition of `any` type and removed/deprecated options
+- Explicit type declarations and interfaces
+- Enhanced type narrowing and auto-accessors (ES2015+ target required)
+- Proper error handling with type safety
+- Runtime validation and schema integration
+- Performance optimization through proper typing
+- Comprehensive testing with type safety
+- Compliance with TypeScript 5.8.3 official documentation
+
+Follow these rules to build type-safe, maintainable, and robust TypeScript applications using the latest TypeScript 5.8.3 features.

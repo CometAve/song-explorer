@@ -1,0 +1,148 @@
+---
+globs: package.json,pnpm-lock.yaml,pnpm-workspace.yaml
+alwaysApply: false
+---
+
+# PNPM Best Practices and Package Management Rules
+
+## Core Principles
+
+### 1. Workspace Management
+
+- **CONFIGURE** workspaces for monorepo projects using pnpm-workspace.yaml
+- **MANAGE** inter-package dependencies efficiently through workspace protocol
+- **SAVE** disk space through common dependency hoisting
+- **ORGANIZE** packages in logical workspace structure with proper filtering
+
+### 2. Strict Dependency Management
+
+- **UTILIZE** non-flat node_modules structure to prevent phantom dependencies
+- **ENFORCE** explicit dependency declarations in package.json
+- **MAINTAIN** strict peer dependency resolution
+- **PREVENT** access to undeclared dependencies
+
+### 3. Performance Optimization
+
+- **SHARE** dependencies through global content-addressable storage
+- **OPTIMIZE** installation speed through symbolic links and parallel processing
+- **UTILIZE** efficient dependency resolution algorithms
+- **MINIMIZE** disk space usage through hard linking
+
+### 4. Lockfile Management
+
+- **LOCK** exact versions through pnpm-lock.yaml for deterministic builds
+- **ENSURE** consistent dependency versions across teams and environments
+- **COMMIT** lockfile to version control for reproducible builds
+- **VERIFY** lockfile integrity with --frozen-lockfile flag
+
+### 5. Package Hook System
+
+- **MODIFY** package manifests through readPackage hooks during installation
+- **MANAGE** dynamic dependency management for complex scenarios
+- **CUSTOMIZE** package resolution behavior through .pnpmfile.cjs
+- **CONFIGURE** package-specific installation logic
+
+### 6. Workspace Dependencies
+
+- **MANAGE** internal package dependencies using workspace protocol
+- **MAINTAIN** proper dependency relationships between workspace packages
+- **ENABLE** efficient cross-package development workflows
+- **USE** workspace:\* or workspace:^version for internal dependencies
+
+### 7. Script Execution
+
+- **ORGANIZE** scripts across workspaces for efficient development
+- **EXECUTE** scripts in parallel when possible using --parallel flag
+- **MANAGE** script dependencies and execution order
+- **ENABLE** workspace-aware script execution with --filter and -r flags
+
+### 8. Dependency Resolution
+
+- **CONFIGURE** hoisting behavior through .npmrc settings
+- **MANAGE** peer dependency resolution with strict-peer-dependencies
+- **CONTROL** dependency isolation and hoisting patterns
+- **OPTIMIZE** node_modules structure for better performance
+
+### 9. Security and Auditing
+
+- **AUDIT** dependencies regularly for vulnerabilities using pnpm audit
+- **UPDATE** packages with security fixes promptly
+- **MANAGE** license compliance and monitoring
+- **MONITOR** dependency health and outdated packages
+
+### 10. CI/CD Integration
+
+- **CONFIGURE** CI/CD pipelines with proper PNPM setup
+- **ENABLE** efficient caching using pnpm/action-setup
+- **OPTIMIZE** build performance with frozen lockfile installation
+- **ENSURE** reproducible builds across environments
+
+### 11. Package Publishing
+
+- **PUBLISH** packages to registries with proper metadata
+- **MANAGE** package versions and distribution workflows
+- **CONFIGURE** publishing settings in package.json
+- **ENSURE** proper package structure and file inclusion
+
+### 12. Environment Configuration
+
+- **CONFIGURE** .npmrc for project-specific settings and registry management
+- **SET** up proper authentication for private registries
+- **ENABLE** team-wide consistency through shared configuration
+- **MANAGE** performance and security settings
+
+### 13. Prohibited Patterns
+
+#### Absolutely Prohibited
+
+1. **NEVER** delete pnpm-lock.yaml
+2. **NEVER** use npm or yarn in PNPM projects
+3. **NEVER** install packages globally without proper justification
+4. **NEVER** ignore peer dependency warnings
+5. **NEVER** use phantom dependencies
+6. **NEVER** modify node_modules directly
+7. **NEVER** ignore security vulnerabilities
+8. **NEVER** use outdated package versions without updates
+9. **NEVER** ignore workspace dependency management
+10. **NEVER** skip dependency auditing
+
+### 14. Maintenance and Troubleshooting
+
+- **RESOLVE** common PNPM issues through proper troubleshooting
+- **MAINTAIN** healthy dependency tree with regular cleanup
+- **CLEAN** up unused dependencies and store
+- **MONITOR** package health and performance
+
+## Best Practices Summary
+
+### Package Management
+
+- Use workspaces for monorepo projects
+- Maintain strict dependency declarations
+- Commit lockfile to version control
+- Use workspace protocol for internal packages
+
+### Performance
+
+- Leverage content-addressable storage
+- Enable parallel installation
+- Optimize dependency resolution
+- Use appropriate caching strategies
+
+### Security
+
+- Regular dependency auditing
+- Keep packages updated
+- Monitor for vulnerabilities
+- Use proper authentication
+
+### Development Workflow
+
+- Organize scripts efficiently
+- Use workspace-aware commands
+- Maintain consistent environments
+- Enable reproducible builds
+
+## Summary
+
+This cursorrules file enforces PNPM best practices focusing on workspace management, strict dependency resolution, performance optimization, security auditing, CI/CD integration, and proper maintenance. Follow these rules to build efficient, maintainable, and secure package management with PNPM.

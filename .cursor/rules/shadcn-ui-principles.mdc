@@ -1,0 +1,167 @@
+---
+description: Shadcn UI Best Practices and Coding Rules
+alwaysApply: false
+---
+
+# Shadcn UI Best Practices and Coding Rules
+
+## Core Principles
+
+### 1. Component Installation and CLI Usage
+
+- **INITIALIZE** project setup with `npx shadcn@latest init` command
+- **INSTALL** components with `npx shadcn@latest add [component]` command
+- **MANAGE** project configuration through `components.json` config file
+- **OPTIMIZE** bundle size by installing only necessary components
+- **QUERY** components from Registry using `npx shadcn@latest view` and `npx shadcn@latest search`
+
+### 2. Theme and Design System Management
+
+- **CONFIGURE** theme system through CSS variables in globals.css
+- **SUPPORT** Light/Dark mode and system setting detection
+- **CUSTOMIZE** theme in `tailwind.config.js` with proper color mappings
+- **UTILIZE** consistent design tokens and HSL color values
+- **MAINTAIN** proper CSS variable structure for theme switching
+
+### 3. Registry Configuration and Custom Components
+
+- **MANAGE** team common components with custom registry settings
+- **CONFIGURE** registry URL in `components.json` with proper namespacing
+- **CATEGORIZE** components through namespaces (@company, @ui, etc.)
+- **ENSURE** HTTPS registry usage for security
+- **SUPPORT** multiple registry configurations for different environments
+
+```json
+{
+  "registries": {
+    "@shadcn": "https://ui.shadcn.com/registry",
+    "@company": "https://registry.company.com/{name}.json",
+    "@private": {
+      "url": "https://api.company.com/registry/{name}.json",
+      "headers": {
+        "Authorization": "Bearer ${REGISTRY_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+### 4. Security and Authentication
+
+- **ENFORCE** HTTPS for all registry URLs
+- **USE** environment variables for sensitive authentication tokens
+- **IMPLEMENT** proper authentication headers (Bearer, API Key, Basic Auth)
+- **SECURE** private registries with appropriate access controls
+- **VALIDATE** registry responses and handle authentication errors
+
+### 5. Accessibility Compliance
+
+- **LEVERAGE** built-in accessibility support based on Radix UI
+- **ENSURE** automatic ARIA attribute handling
+- **PROVIDE** complete keyboard navigation support
+- **MAINTAIN** screen reader compatibility
+- **MANAGE** focus and color contrast compliance with WCAG standards
+- **USE** semantic HTML elements and proper ARIA roles
+
+### 6. Component Integration Patterns
+
+- **MAINTAIN** compatibility with existing APIs by wrapping Shadcn UI components
+- **UTILIZE** composition patterns with `asChild` prop
+- **SUPPORT** ref forwarding through forwardRef
+- **EXTEND** styles through className merge with `cn` utility
+- **PRESERVE** component API consistency
+
+### 7. Form Integration
+
+- **INTEGRATE** Shadcn UI components with React Hook Form
+- **UTILIZE** proper form validation with Zod or similar
+- **MAINTAIN** consistent form styling and error handling
+- **HANDLE** form state properly with controlled components
+- **ENSURE** proper form accessibility
+
+### 8. Custom Component Creation
+
+- **CREATE** custom components following Shadcn UI patterns
+- **MAINTAIN** consistent styling and behavior using CVA (Class Variance Authority)
+- **ENSURE** proper TypeScript integration with VariantProps
+- **FOLLOW** established design patterns and naming conventions
+- **IMPLEMENT** proper forwardRef and displayName patterns
+
+### 9. Theme Customization
+
+- **CUSTOMIZE** theme colors and variables through CSS custom properties
+- **MAINTAIN** design system consistency across components
+- **SUPPORT** multiple theme variants (light, dark, custom)
+- **ENABLE** dynamic theme switching with proper CSS variable updates
+- **CONFIGURE** Tailwind CSS to use theme variables
+
+### 10. Component Library Organization
+
+- **ORGANIZE** components in logical structure (ui/, forms/, layout/, features/)
+- **MAINTAIN** consistent file naming conventions
+- **SEPARATE** UI components from business logic
+- **ENABLE** easy component discovery and import
+- **STRUCTURE** components by feature or domain when appropriate
+
+### 11. Performance Optimization
+
+- **OPTIMIZE** component imports to enable tree shaking
+- **MINIMIZE** bundle size by importing only necessary components
+- **IMPLEMENT** lazy loading for heavy components when appropriate
+- **USE** proper code splitting strategies
+- **AVOID** unnecessary re-renders with proper memoization
+
+### 12. Testing Strategy
+
+- **TEST** component behavior and interactions thoroughly
+- **VERIFY** accessibility compliance with automated tests
+- **ENSURE** proper styling and theming in different states
+- **VALIDATE** form integration and error handling
+- **MAINTAIN** test coverage for critical user interactions
+
+### 13. Documentation and Maintenance
+
+- **DOCUMENT** custom components with proper JSDoc comments
+- **MAINTAIN** component consistency across the library
+- **UPDATE** components regularly to match design system changes
+- **PROVIDE** clear usage examples and API documentation
+- **KEEP** documentation in sync with component changes
+
+## Prohibited Patterns
+
+### Absolutely Prohibited
+
+1. **NEVER** modify Shadcn UI components directly - always extend or wrap them
+2. **NEVER** ignore accessibility requirements - all components must be accessible
+3. **NEVER** use components without proper TypeScript types
+4. **NEVER** skip theme configuration - always configure proper CSS variables
+5. **NEVER** ignore component composition patterns - use established patterns
+6. **NEVER** use inline styles instead of Tailwind classes
+7. **NEVER** ignore form validation integration - always validate user input
+8. **NEVER** create components without proper error handling
+9. **NEVER** ignore responsive design principles
+10. **NEVER** use components without proper testing
+11. **NEVER** use HTTP for registry URLs - always use HTTPS
+12. **NEVER** hardcode authentication tokens in configuration files
+13. **NEVER** ignore environment variable security practices
+14. **NEVER** skip proper component organization and file structure
+
+## Summary
+
+This cursorrules file enforces Shadcn UI best practices focusing on:
+
+- Proper component installation and CLI usage
+- Theme and design system management
+- Registry configuration and custom components
+- Security and authentication practices
+- Accessibility compliance methods
+- Component integration and composition patterns
+- Form integration with validation
+- Custom component creation following established patterns
+- Theme customization and CSS variable management
+- Component library organization and structure
+- Performance optimization strategies
+- Comprehensive testing approaches
+- Documentation and maintenance practices
+
+Follow these rules to build consistent, accessible, secure, and maintainable UI components with Shadcn UI.

@@ -1,0 +1,238 @@
+---
+description: Tailwind CSS v3.4.17 Best Practices and Coding Rules
+globs: '**/*.tsx, **/*.jsx, **/*.html, **/*.css'
+alwaysApply: true
+---
+
+# Tailwind CSS v3.4.17 Best Practices and Coding Rules
+
+## Core Principles
+
+### 1. Utility-First Approach Priority
+
+- **USE** utility classes first for consistent styling
+- **MINIMIZE** custom CSS and avoid writing custom styles when utilities exist
+- **IMPLEMENT** complex designs through utility class combinations
+- **MAINTAIN** consistent design system using utility-first methodology
+
+### 2. Mobile-First Responsive Design
+
+- **DEFINE** mobile styles by default, then extend for desktop using breakpoint prefixes
+- **SYSTEMATICALLY** utilize responsive breakpoints (sm, md, lg, xl, 2xl)
+- **IMPLEMENT** per-component responsiveness through container query support
+- **AVOID** desktop-first responsive approach
+
+### 3. Dynamic Viewport Units (v3.4)
+
+- **USE** dynamic viewport units for mobile-friendly full-height layouts
+- **SOLVE** mobile browser viewport height issues with `h-dvh`, `h-svh`, `h-lvh`
+- **ENSURE** proper full-screen experiences across all devices
+- **LEVERAGE** `min-h-dvh` for hero sections and full-height layouts
+
+### 4. :has() Support (v3.4)
+
+- **STYLE** parent elements based on child state using `has-[:checked]`, `has-[:disabled]`, `has-[:focus]`, `has-[:invalid]`
+- **ELIMINATE** JavaScript for conditional styling based on child elements
+- **ENHANCE** form interactions and component state management
+- **CREATE** more semantic and maintainable styling patterns
+
+### 5. Container Queries Support
+
+- **MARK** elements as containers using `@container` class
+- **STYLE** child elements responsively based on container size using `@sm:`, `@md:`, `@lg:` variants
+- **IMPLEMENT** component-level responsiveness independent of viewport size
+- **USE** container queries for reusable components
+
+### 6. Forced Colors Support (v3.4)
+
+- **ENHANCE** accessibility with `forced-colors:` variant for high-contrast mode
+- **CONTROL** color rendering with `forced-color-adjust-none` utility
+- **MAINTAIN** design integrity in high-contrast environments
+- **PROVIDE** fallbacks for forced colors mode using appropriate color mappings
+
+### 7. Accessibility-Conscious Styling
+
+- **MANDATORY** focus state styling with `focus:outline-none focus:ring-2 focus:ring-offset-2`
+- **ADHERE** to WCAG standards for color contrast (minimum 4.5:1 ratio)
+- **SET** appropriate focus rings for keyboard navigation support
+- **SUPPORT** forced colors mode and screen reader compatibility
+
+### 8. Performance Optimization
+
+- **AUTO-REMOVE** unused classes through proper content path configuration
+- **OPTIMIZE** bundle size through conditional class rendering
+- **REDUCE** HTML size through class name optimization
+- **CONFIGURE** proper content paths for purging in production builds
+
+### 9. Custom Theme Configuration
+
+- **EXTEND** default theme instead of overriding to maintain compatibility
+- **USE** CSS custom properties for dynamic theming
+- **MAINTAIN** consistent spacing and typography scales
+- **DEFINE** custom colors, spacing, and animations in theme.extend
+
+### 10. Dark Mode Implementation
+
+- **CONFIGURE** dark mode strategy (class or media) in tailwind.config.js
+- **USE** `dark:` prefix for dark mode styles consistently
+- **MAINTAIN** consistent dark mode experience across all components
+- **PROVIDE** proper contrast ratios in both light and dark modes
+
+### 11. Responsive Breakpoint Usage
+
+- **USE** breakpoint prefixes systematically (sm:, md:, lg:, xl:, 2xl:)
+- **COMBINE** multiple breakpoint variants for complex responsive behavior
+- **TARGET** specific breakpoint ranges when needed using `md:max-lg:`
+- **MAINTAIN** consistent breakpoint usage across the application
+
+### 12. State Variants and Interactions
+
+- **USE** state variants consistently (hover:, focus:, active:, disabled:)
+- **IMPLEMENT** proper interaction feedback with transition utilities
+- **MAINTAIN** consistent state styling patterns across components
+- **ENSURE** all interactive elements have appropriate state styling
+
+### 13. Typography and Spacing
+
+- **USE** consistent typography scale with proper line heights
+- **MAINTAIN** proper spacing using Tailwind's spacing scale
+- **IMPLEMENT** readable text hierarchy with appropriate font sizes
+- **BALANCE** headlines with `text-balance` utility (v3.4) for better readability
+
+### 14. Extended Utility Scales (v3.4)
+
+- **UTILIZE** expanded opacity scale with more granular values (opacity-35, etc.)
+- **LEVERAGE** extended min-width, max-width, and min-height scales
+- **USE** expanded grid-rows scale for complex layouts
+- **REDUCE** need for arbitrary values with predefined scales
+
+### 15. Layout and Flexbox/Grid
+
+- **USE** appropriate layout methods (flexbox, grid, positioning)
+- **IMPLEMENT** responsive layouts systematically
+- **MAINTAIN** consistent spacing and alignment
+- **LEVERAGE** subgrid for complex nested layouts (v3.4)
+
+### 16. Browser Support Variants (v3.2)
+
+- **USE** `supports-[...]` variants for progressive enhancement
+- **PROVIDE** fallbacks for unsupported CSS features
+- **ENHANCE** user experience based on browser capabilities
+- **IMPLEMENT** graceful degradation patterns
+
+### 17. Animation and Transitions
+
+- **USE** Tailwind's built-in transition utilities
+- **IMPLEMENT** smooth animations for better UX
+- **MAINTAIN** consistent animation timing and easing
+- **AVOID** excessive animations that may cause motion sensitivity issues
+
+### 18. Form Styling
+
+- **STYLE** form elements consistently with proper focus states
+- **PROVIDE** clear visual feedback for validation states
+- **MAINTAIN** accessibility standards for form elements
+- **USE** proper error and success state styling
+
+### 19. Component Composition
+
+- **COMPOSE** complex components using utility classes
+- **MAINTAIN** consistent component patterns
+- **ENABLE** easy customization through class props
+- **CREATE** reusable component variants
+
+## Configuration Examples
+
+### Basic Configuration
+
+```javascript
+// tailwind.config.js
+module.exports = {
+  content: ['./src/**/*.{js,ts,jsx,tsx}', './public/index.html'],
+  theme: {
+    extend: {
+      // Custom theme extensions
+    },
+  },
+  plugins: [],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
+};
+```
+
+### Custom Theme with v3.4 Features
+
+```javascript
+// tailwind.config.js
+module.exports = {
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#eff6ff',
+          500: '#3b82f6',
+          900: '#1e3a8a',
+        },
+      },
+      spacing: {
+        18: '4.5rem',
+        88: '22rem',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+    },
+  },
+  plugins: [],
+};
+```
+
+## Prohibited Patterns
+
+### Absolutely Prohibited
+
+1. **NEVER** use inline styles - use Tailwind utilities
+2. **NEVER** write custom CSS when utilities exist
+3. **NEVER** use arbitrary values without justification
+4. **NEVER** ignore responsive design principles
+5. **NEVER** skip focus states for interactive elements
+6. **NEVER** use hardcoded colors without theme configuration
+7. **NEVER** ignore accessibility requirements
+8. **NEVER** use desktop-first responsive approach
+9. **NEVER** create inconsistent spacing or typography
+10. **NEVER** ignore dark mode considerations
+11. **NEVER** ignore forced colors mode support
+12. **NEVER** skip browser support variants for progressive enhancement
+
+## Summary
+
+This cursorrules file enforces Tailwind CSS v3.4.17 best practices focusing on:
+
+- **Utility-first approach** with minimal custom CSS
+- **Mobile-first responsive design** with dynamic viewport units (v3.4)
+- **Container queries** for component-level responsiveness
+- **:has() Support** for advanced conditional styling (v3.4)
+- **Forced Colors Support** for enhanced accessibility (v3.4)
+- **Text Balance** for improved typography (v3.4)
+- **Extended Utility Scales** with more granular values (v3.4)
+- **Subgrid Support** for complex layouts (v3.4)
+- **Browser Support Variants** for progressive enhancement (v3.2)
+- **Accessibility-conscious styling** with proper focus states
+- **Performance optimization** through proper purging
+- **Consistent theming** and dark mode support
+- **Proper state variants** and interactions
+- **Typography and spacing** consistency
+- **Layout composition** with flexbox and grid
+- **Smooth animations** and transitions
+- **Form styling** with proper feedback
+- **Component composition** patterns
+
+Follow these rules to build consistent, accessible, and performant user interfaces with the latest Tailwind CSS v3.4.17 features.

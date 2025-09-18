@@ -1,0 +1,71 @@
+---
+description: Commit Message Convetion
+alwaysApply: false
+---
+# 팀 커밋 메시지 규칙
+
+## 형식 (Format)
+
+커밋 메시지는 다음의 형식을 따릅니다. `<domain>`을 추가하여 어떤 영역의 커밋인지 명시합니다.
+
+```markdown
+<domain> <type>: <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+## Domain Prefix 종류
+
+커밋의 목적에 따라 `type` 앞에 `<>`으로 감싼 **Domain Prefix**를 추가하여 어떤 팀의 작업인지 명시합니다.
+
+- `<FE>`: 프론트엔드 (Frontend)
+- `<BE>`: 백엔드 (Backend)
+- `<AI>`: 인공지능 (Artificial Intelligence)
+
+## Type 종류
+
+- `feat`: 새로운 기능 구현
+- `fix`: 버그 수정
+- `docs`: 문서 관련 수정
+- `style`: 코드 스타일 변경 (포맷, 세미콜론 누락 등 기능적 변경이 없는 경우)
+- `refactor`: 코드 리팩토링
+- `test`: 테스트 코드 추가 또는 수정
+- `build`: 빌드 관련 파일 수정
+- `ci`: CI/CD 설정 파일 수정
+- `perf`: 성능 개선
+- `chore`: 그 외 자잘한 수정 (빌드, 패키지 매니저 설정 등)
+
+## 메시지 내용 (Content)
+
+- 메시지는 **한글**로 작성하는 것을 원칙으로 합니다.
+- 제목(subject)은 **명사형**으로 간결하게 작성하고 마침표를 붙이지 않습니다.
+  - **좋은 예**: `회원 가입 기능 구현`
+  - **나쁜 예**: `회원 가입 기능 구현함`, `회원 가입 기능 구현.`
+- 제목과 본문은 한 줄을 띄어 분리합니다.
+- 본문(body)에는 **무엇을(what)**, **왜(why)** 변경했는지 상세히 작성하거나
+- 아니면 무엇을 하였는지 본문에 리스트 형식으로 나열해도 됩니다.
+
+## 예시 (Examples)
+
+### FE 새로운 기능 추가
+
+```markdown
+<FE> feat: 비밀번호 중복 확인 기능 추가
+```
+
+### BE 버그 수정 (본문 포함, 리스트 형식도 가능)
+
+```markdown
+<BE> fix: 상품 조회 시 발생하는 NullPointerException 해결
+
+특정 조건에서 상품 이미지 정보가 누락되는 문제를 수정했습니다.
+Optional 처리를 통해 안정성을 강화했습니다.
+```
+
+### AI 성능 개선
+
+```markdown
+<AI> perf: 추천 모델의 추론 시간 5% 단축
+```

@@ -1,0 +1,255 @@
+---
+alwaysApply: true
+---
+# General Coding Rules and Project Structure
+
+## Core Principles
+
+### 1. Clean Code Compliance
+
+- **WRITE** readable, concise code over complex implementations
+- **MAINTAIN** code structure that expresses clear intent
+- **AIM** for self-documenting code
+- **PRIORITIZE** understandable code over excessive optimization
+
+### 2. Single Responsibility Principle
+
+- **ENSURE** every component has only single responsibility
+- **MAKE** functions perform only one task
+- **DESIGN** classes/modules to change for only one reason
+- **ACHIEVE** modularization through separation of concerns
+
+### 3. Write Maximally Concise Logic
+
+- **REMOVE** unnecessary complexity
+- **MINIMIZE** nested conditionals
+- **UTILIZE** early return patterns
+- **MAINTAIN** clear data flow
+
+### 4. Naming Conventions
+
+- **USE** clear naming structure
+- **APPLY** PascalCase for components and types
+- **USE** camelCase for variables and functions
+- **UTILIZE** UPPER_SNAKE_CASE for constants
+- **FOLLOW** use + PascalCase pattern for custom hooks
+
+### 5. Prioritize Named Exports
+
+- **USE** Named exports instead of Default exports
+- **ENABLE** tree shaking optimization
+- **PROVIDE** explicit module dependency management
+- **ENSURE** clear identifiers when importing
+
+### 6. Systematize Import Order
+
+- **ORGANIZE** imports in logical groups
+- **SEPARATE** React and built-in libraries first
+- **INCLUDE** external libraries second
+- **ADD** internal modules last
+- **USE** absolute imports with "@" alias for internal modules
+- **CONFIGURE** path mapping in tsconfig.json for "@" alias
+- **MAINTAIN** consistent import paths across the project
+
+### 7. Project Structure and Modularization
+
+- **ORGANIZE** directory structure by functionality
+- **SEPARATE** components, hooks, types, utilities clearly
+- **IMPLEMENT** domain-centered module composition
+- **DISTINGUISH** reusable modules from specific feature modules
+
+```markdown
+src/
+├── auth/ # Authentication feature
+│ ├── components/ # Auth-specific components
+│ ├── hooks/ # Auth-specific hooks
+│ ├── stores/ # Auth state management (Jotai)
+│ ├── types/ # Auth type definitions
+| └── services/ # Auth services(api client)
+├── home/ # Home feature
+│ ├── components/
+│ ├── hooks/
+│ ├── stores/
+│ ├── types/
+| └── services/
+├── onboarding/ # Onboarding feature
+│ ├── components/
+│ ├── hooks/
+│ ├── stores/
+│ ├── types/
+| └── services/
+├── shared/ # Shared resources
+│ ├── components/ # Reusable UI components
+│ ├── hooks/ # Shared custom hooks
+│ ├── stores/ # Global state management
+│ ├── types/ # Shared type definitions
+| └── utils/ # Shared utilities
+├── App.tsx # Main App component
+├── index.css # Global styles (Tailwind CSS)
+└── main.tsx # Application entry point
+```
+
+**Tech Stack**: React 19.1.1, TypeScript 5.8.3, Vite 7.1.2, Tailwind CSS 3.4.17, Jotai 2.13.1 (state management), React Router DOM 7.8.2, React Hook Form 7.62.0, Zod 4.1.5 (validation), Radix UI components.
+
+### 8. API Client and Common Logic Separation
+
+- **SEPARATE** all API call logic into dedicated modules
+- **GROUP** API functions by domain
+- **CONFIGURE** reusable API clients
+- **ENSURE** type-safe API response handling
+
+```typescript
+// API client with interceptors for auth and error handling
+export const apiClient = axios.create({
+  baseURL: process.env.VITE_API_BASE_URL,
+  timeout: 10000,
+  headers: { 'Content-Type': 'application/json' },
+});
+
+// Request interceptor for auth token
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('authToken');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// Response interceptor for error handling
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('authToken');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  },
+);
+```
+
+### 9. Error Handling and Exception Management
+
+- **APPLY** try-catch to all asynchronous tasks
+- **IMPLEMENT** component-level error handling through Error Boundary
+- **PROVIDE** user-friendly error messages
+- **OFFER** error recovery options
+
+```typescript
+// Error Boundary for component-level error handling
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="error-boundary">
+          <h2>Something went wrong.</h2>
+          <button onClick={() => this.setState({ hasError: false })}>
+            Try again
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+```
+
+### 10. Performance Optimization Strategies
+
+- **LEVERAGE** React Compiler for automatic memoization when available
+- **OPTIMIZE** bundle size through code splitting and tree shaking
+- **PREVENT** unnecessary re-rendering through proper component design
+- **UTILIZE** lazy loading and dynamic imports effectively
+- **MINIMIZE** bundle size by importing only necessary components
+
+### 11. Security and Data Protection
+
+- **VALIDATE** input to prevent XSS attacks
+- **IMPLEMENT** request security through CSRF tokens
+- **CONFIGURE** Content Security Policy
+- **AVOID** storing sensitive information on client
+
+### 12. Testing Strategies
+
+- **WRITE** tests from user perspective using React Testing Library
+- **BASE** tests on actual usage scenarios and user interactions
+- **SIMULATE** error situations and edge cases
+- **ENSURE** accessibility compliance through automated testing
+- **MOCK** external dependencies and API calls appropriately
+
+### 13. Documentation and Collaboration
+
+- **EXPLAIN** complex logic through comments
+- **DOCUMENT** functions/components through JSDoc
+- **MAINTAIN** project introduction through README files
+- **ENSURE** clear code ownership and responsibility
+
+### 14. Prohibited Patterns
+
+#### Absolutely Prohibited
+
+1. **NEVER** use `any` type - destroys type safety
+2. **NEVER** use `console.log` in production code
+3. **NEVER** hardcode values - separate into constants files
+4. **NEVER** miss try-catch for async functions
+5. **NEVER** create subscriptions without useEffect cleanup
+6. **NEVER** assign multiple responsibilities to components
+7. **NEVER** ignore error handling
+8. **NEVER** use inline styles instead of CSS classes
+9. **NEVER** ignore accessibility requirements
+10. **NEVER** create circular dependencies
+
+### 15. Environment Variables and Configuration
+
+- **SEPARATE** environment-specific configurations
+- **MANAGE** sensitive information through environment variables
+- **DIFFERENTIATE** configurations for different environments
+- **DOCUMENT** required environment variables
+
+```typescript
+// Environment configuration with runtime validation
+interface EnvConfig {
+  readonly API_BASE_URL: string;
+  readonly AUTH_DOMAIN: string;
+  readonly NODE_ENV: 'development' | 'production' | 'test';
+}
+
+function validateConfig(config: Partial<EnvConfig>): EnvConfig {
+  const requiredKeys: (keyof EnvConfig)[] = ['API_BASE_URL', 'AUTH_DOMAIN', 'NODE_ENV'];
+  for (const key of requiredKeys) {
+    if (!config[key]) {
+      throw new Error(`Missing required environment variable: ${key}`);
+    }
+  }
+  return config as EnvConfig;
+}
+```
+
+## Summary
+
+This cursorrules file enforces general coding best practices focusing on:
+
+- Clean code principles and readability
+- Single responsibility principle
+- Concise logic and early returns
+- Consistent naming conventions
+- Named exports and organized imports
+- Proper project structure and modularization
+- API client separation and common logic
+- Comprehensive error handling
+- Performance optimization strategies
+- Security and data protection
+- Testing strategies and user-centric testing
+- Documentation and collaboration
+- Environment configuration management
+
+Follow these rules to build maintainable, scalable, and high-quality applications with consistent code standards.

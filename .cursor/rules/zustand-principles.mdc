@@ -1,0 +1,146 @@
+---
+description: Zustand Best Practices and Coding Rules
+alwaysApply: false
+---
+# Zustand Best Practices and Coding Rules
+
+## Core Principles
+
+### 1. Store Design Patterns
+
+- **COEXIST** actions and state in single store - Keep state and actions together within the `create` function for better encapsulation and maintainability
+- **DEFINE** state and actions together - Colocate related state and actions to reduce cognitive load and improve code organization
+- **SPLIT** stores by single responsibility - Create focused stores that handle one domain of application state
+- **SUPPORT** both Flux and Redux patterns - Use `set` for direct updates or `redux` middleware for reducer-based updates
+
+### 2. TypeScript Integration
+
+- **DEFINE** complete interfaces for all stores - Include both state properties and action methods in store interfaces
+- **USE** `combine` middleware for complex stores - Separate initial state from actions for better type inference and organization
+- **ENSURE** type safety throughout - Leverage TypeScript's type system to prevent runtime errors and improve developer experience
+- **CREATE** generic store patterns - Build reusable store factories for common patterns
+
+### 3. Middleware Utilization
+
+- **PERSIST** state with `persist` middleware - Enable state persistence across browser sessions with selective state serialization
+- **INTEGRATE** Redux DevTools with `devtools` middleware - Enable debugging and time-travel debugging capabilities
+- **SUPPORT** Redux pattern with `redux` middleware - Use reducer-based state updates when needed
+- **ENABLE** selective subscription with `subscribeWithSelector` middleware - Optimize performance with targeted subscriptions
+
+```typescript
+// Complex middleware configuration example
+const useStore = create<StoreType>()(
+  devtools(
+    persist(
+      subscribeWithSelector((set, get) => ({
+        // state and actions
+      })),
+      {
+        name: 'store-name',
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+          /* selective persistence */
+        }),
+      },
+    ),
+    { name: 'store-devtools' },
+  ),
+);
+```
+
+### 4. Performance Optimization
+
+- **USE** `useShallow` for object comparisons - Prevent unnecessary re-renders when selecting multiple state properties
+- **SUBSCRIBE** to specific state only - Use selectors to subscribe only to the state your component needs
+- **IMPLEMENT** proper memoization - Use `useMemo` for expensive computations derived from store state
+- **AVOID** unnecessary re-renders - Structure selectors to minimize component updates
+
+### 5. Slices Pattern for Complex State
+
+- **ORGANIZE** state into logical slices - Break down complex stores into focused, manageable pieces
+- **COMBINE** multiple slices into single store - Use `StateCreator` to compose slices while maintaining type safety
+- **MAINTAIN** clear separation of concerns - Each slice should handle one aspect of application state
+- **ENABLE** modular state management - Allow independent development and testing of state logic
+
+```typescript
+// Slices pattern for complex state
+const createSliceA: StateCreator<StoreType, [], [], SliceA> = (set, get) => ({
+  // slice A implementation
+});
+
+const createSliceB: StateCreator<StoreType, [], [], SliceB> = (set, get) => ({
+  // slice B implementation
+});
+
+const useStore = create<StoreType>()((...a) => ({
+  ...createSliceA(...a),
+  ...createSliceB(...a),
+}));
+```
+
+### 6. Async Actions and Side Effects
+
+- **HANDLE** async operations in actions - Manage asynchronous state updates within store actions
+- **MANAGE** loading states - Track loading status for better user experience
+- **IMPLEMENT** comprehensive error handling - Catch and handle errors gracefully with proper state updates
+- **PROVIDE** proper state updates - Ensure state consistency during async operations
+
+### 7. Testing Strategies
+
+- **SEPARATE** store creation from usage - Extract store creation into testable functions
+- **WRITE** unit tests for each action - Test individual store actions in isolation
+- **TEST** with pure stores - Test stores without middleware for simpler test setup
+- **MOCK** external dependencies - Isolate store logic from external services
+
+### 8. State Persistence
+
+- **CONFIGURE** selective state persistence - Use `partialize` to persist only necessary state
+- **HANDLE** hydration properly - Manage state rehydration with proper error handling
+- **MANAGE** storage errors - Provide fallback behavior when storage operations fail
+- **PROVIDE** fallback values - Ensure application stability when persistence fails
+
+### 9. Store Composition and Modularity
+
+- **CREATE** focused, single-purpose stores - Each store should handle one domain of application state
+- **COMPOSE** stores when needed - Combine stores for cross-cutting concerns
+- **MAINTAIN** clear boundaries - Keep stores independent and loosely coupled
+- **ENABLE** easy testing and maintenance - Structure stores for independent development
+
+### 10. Integration Patterns
+
+- **COMBINE** with React Query for server state - Use Zustand for client state, React Query for server state
+- **MANAGE** client state with Zustand - Keep UI state and user preferences in Zustand stores
+- **SYNCHRONIZE** between client and server state - Coordinate between different state management solutions
+- **HANDLE** loading and error states properly - Manage different types of state consistently
+
+## Prohibited Patterns
+
+### Absolutely Prohibited
+
+1. **NEVER** create stores without proper TypeScript types - Type safety is essential for maintainable code
+2. **NEVER** use stores for temporary local state - Use React state for component-local state
+3. **NEVER** ignore error handling in async actions - Always handle errors in async operations
+4. **NEVER** create circular dependencies between stores - Keep stores independent and unidirectional
+5. **NEVER** use stores without proper cleanup - Ensure proper subscription cleanup
+6. **NEVER** ignore performance implications of subscriptions - Optimize selectors and subscriptions
+7. **NEVER** create stores that are too tightly coupled - Maintain loose coupling between stores
+8. **NEVER** use stores for derived state that can be computed - Use selectors for computed values
+9. **NEVER** ignore persistence configuration - Configure persistence properly for production use
+10. **NEVER** create stores without proper testing - Test all store logic thoroughly
+
+## Summary
+
+This cursorrules file enforces Zustand best practices focusing on:
+
+- Store design patterns with state and actions coexistence
+- Complete TypeScript integration with proper typing
+- Middleware utilization for persistence and devtools
+- Performance optimization with selective subscriptions
+- Slices pattern for complex state management
+- Async actions and comprehensive error handling
+- Testing strategies for maintainable stores
+- State persistence with proper configuration
+- Store composition and modularity
+- Integration patterns with other libraries
+
+Follow these rules to build scalable, maintainable, and performant state management with Zustand.

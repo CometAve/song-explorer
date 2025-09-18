@@ -1,0 +1,146 @@
+---
+description: TanStack Query Best Practices and Coding Rules
+alwaysApply: false
+---
+
+# TanStack Query Best Practices and Coding Rules
+
+## Core Principles
+
+### 1. Query Keys Management Strategy
+
+- **INCLUDE** all variables that queries depend on in query keys (acts like dependency array)
+- **DESIGN** query keys with hierarchical structure: `['todos', todoId]`, `['users', userId, 'posts']`
+- **MAINTAIN** consistent key management with Query Key Factory pattern
+- **PREFER** array format over complex object-based query keys
+- **OPTIMIZE** invalidation by grouping related queries
+
+### 2. Query Options Optimization
+
+- **USE** `queryOptions` function for type-safe reusable query configurations
+- **SET** appropriate `staleTime` and `gcTime` (recommend staleTime > 0 for SSR)
+- **CONTROL** conditional query execution with `enabled` option
+- **TRANSFORM** data using `select` for memoization
+- **DEFINE** retry strategies for failed queries with `retry` setting
+
+### 3. Error Handling and Error Boundary Integration
+
+- **USE** `throwOnError: true` with Error Boundary
+- **UTILIZE** type guards for specific error types
+- **SEPARATE** global error handler from query-specific error handlers
+- **OPTIMIZE** user experience based on error states
+
+### 4. Mutations and Optimistic Updates
+
+- **HANDLE** server state changes with `useMutation`
+- **IMPLEMENT** optimistic updates in `onMutate`
+- **ROLLBACK** to previous state on failure
+- **PERFORM** related query invalidation in `onSuccess`
+- **MANAGE** loading states for multiple mutations
+
+```typescript
+// Essential pattern for optimistic updates
+const mutation = useMutation({
+  mutationFn: updateTodo,
+  onMutate: async (newTodo) => {
+    await queryClient.cancelQueries({ queryKey: ['todos'] });
+    const previousTodos = queryClient.getQueryData(['todos']);
+    queryClient.setQueryData(['todos'], (old: Todo[]) =>
+      old?.map((todo) => (todo.id === newTodo.id ? newTodo : todo)),
+    );
+    return { previousTodos };
+  },
+  onError: (err, newTodo, context) => {
+    queryClient.setQueryData(['todos'], context?.previousTodos);
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['todos'] });
+  },
+});
+```
+
+### 5. Infinite Queries Handling
+
+- **IMPLEMENT** infinite scrolling with `useInfiniteQuery`
+- **DETERMINE** next page parameters with `getNextPageParam`
+- **SAFELY** load pages with `hasNextPage` and `isFetching` checks
+- **HANDLE** per-page error handling and retry logic
+
+### 6. Query Client Configuration
+
+- **CONFIGURE** QueryClient with appropriate defaults
+- **SET** global error handling
+- **DEFINE** default options for queries and mutations
+- **IMPLEMENT** proper cache management
+
+### 7. Custom Hooks for Query Logic
+
+- **EXTRACT** query logic into custom hooks
+- **ENCAPSULATE** complex query configurations
+- **PROVIDE** type-safe interfaces
+- **ENABLE** reusability across components
+
+### 8. Prefetching and Background Updates
+
+- **PREFETCH** data for better user experience
+- **UTILIZE** background refetching for fresh data
+- **IMPLEMENT** smart prefetching strategies
+
+### 9. Suspense Integration
+
+- **USE** `suspense: true` for Suspense boundaries
+- **HANDLE** loading states with Suspense
+- **IMPLEMENT** proper error boundaries
+
+### 10. Parallel and Dependent Queries
+
+- **EXECUTE** independent queries in parallel
+- **HANDLE** dependent queries with proper sequencing
+- **OPTIMIZE** query execution patterns
+
+### 11. Prohibited Patterns
+
+#### Absolutely Prohibited
+
+1. **NEVER** use unstable query keys
+2. **NEVER** ignore error handling in mutations
+3. **NEVER** use `any` type for query data
+4. **NEVER** forget to invalidate related queries after mutations
+5. **NEVER** use queries without proper loading states
+6. **NEVER** ignore stale time configuration
+7. **NEVER** use mutations without proper error handling
+8. **NEVER** forget to clean up subscriptions
+9. **NEVER** use queries in loops without proper key management
+10. **NEVER** ignore retry strategies for network requests
+
+### 12. Testing TanStack Query
+
+- **MOCK** query client for testing
+- **TEST** query states and behaviors
+- **VERIFY** mutation outcomes
+- **ENSURE** proper cleanup in tests
+
+### 13. Performance Optimization
+
+- **USE** `select` for data transformation
+- **IMPLEMENT** proper memoization
+- **OPTIMIZE** query key structures
+- **MANAGE** cache size effectively
+
+## Summary
+
+This cursorrules file enforces TanStack Query best practices focusing on:
+
+- Proper query key management and factory patterns
+- Optimized query options and configuration
+- Comprehensive error handling and Error Boundary integration
+- Effective mutations with optimistic updates
+- Infinite queries for pagination
+- Custom hooks for query logic encapsulation
+- Prefetching and background updates
+- Suspense integration
+- Parallel and dependent query patterns
+- Testing strategies
+- Performance optimization techniques
+
+Follow these rules to build robust, performant, and maintainable data fetching with TanStack Query.
