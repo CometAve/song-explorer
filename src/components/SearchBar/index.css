@@ -28,7 +28,7 @@
     margin: 2rem 1rem;
     padding: 1rem;
   }
-  
+
   .SearchBar__container {
     gap: 0.5rem;
     border-radius: 30px;
@@ -84,7 +84,7 @@
     border-radius: 25px;
     padding: 0.5rem 1rem;
   }
-  
+
   .SearchBar__icon {
     font-size: 1.2rem;
     margin-right: 0.5rem;
@@ -125,7 +125,7 @@
     font-size: 16px;
     padding: 0.5rem;
   }
-  
+
   .SearchBar__input::placeholder {
     font-size: 16px;
   }

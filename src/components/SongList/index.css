@@ -18,14 +18,22 @@
 
 .SongList__empty {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 2rem 1rem;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
-  border-radius: 20px;
+  border-radius: 15px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SongList__empty {
+    padding: 3rem 2rem;
+    border-radius: 20px;
+  }
 }
 
 .SongList__empty::before {
@@ -45,12 +53,20 @@
 }
 
 .SongList__empty-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
   animation: iconFloat 3s ease-in-out infinite;
   position: relative;
   z-index: 1;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SongList__empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
 }
 
 @keyframes iconFloat {
@@ -64,7 +80,7 @@
 }
 
 .SongList__empty-text {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: #fff;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -74,23 +90,42 @@
 }
 
 .SongList__empty-subtext {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.8);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 1;
 }
 
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SongList__empty-text {
+    font-size: 1.5rem;
+  }
+
+  .SongList__empty-subtext {
+    font-size: 1rem;
+  }
+}
+
 .SongList__loading {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 2rem 1rem;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
-  border-radius: 20px;
+  border-radius: 15px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SongList__loading {
+    padding: 3rem 2rem;
+    border-radius: 20px;
+  }
 }
 
 .SongList__loading::before {
@@ -110,15 +145,26 @@
 }
 
 .SongList__loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #ff6b9d;
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #ff6b9d;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
+  margin: 0 auto 0.75rem;
   position: relative;
   z-index: 1;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SongList__loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #ff6b9d;
+    margin: 0 auto 1rem;
+  }
 }
 
 @keyframes spin {
@@ -131,10 +177,17 @@
 }
 
 .SongList__loading-text {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 1;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 480px) {
+  .SongList__loading-text {
+    font-size: 1.2rem;
+  }
 }
